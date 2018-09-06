@@ -13,7 +13,7 @@ public class JsonConsumer implements IConsumer {
 
 
     @Override
-    public Consumer<String> getActionOnEvent() {
+    public Consumer<String> actionOnEvent() {
         return line -> {
             try {
                 Map<String, String> res = objectMapper.readValue(line, Map.class);
@@ -38,10 +38,5 @@ public class JsonConsumer implements IConsumer {
                 }
             }
         };
-    }
-
-    @Override
-    public Consumer<Throwable> getActionOnError() {
-        return Throwable::printStackTrace;
     }
 }

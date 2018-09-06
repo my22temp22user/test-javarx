@@ -9,14 +9,11 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
 public class JsonProducer {
 
@@ -42,10 +39,7 @@ public class JsonProducer {
         for (IConsumer consumer : consumers) {
             logger.info("subscribing to events");
 
-            listObservable.subscribe(line -> {
-                Consumer<String> action = consumer.getActionOnEvent();
-                action.accept(line);
-            }, th -> consumer.getActionOnError());
+            listObservable.subscribe(line -> consumer.actionOnEvent().accept(line));
         }
 
         Executors.newSingleThreadExecutor().submit(() -> {
