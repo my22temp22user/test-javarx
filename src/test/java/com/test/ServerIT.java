@@ -1,7 +1,6 @@
 package com.test;
 
 import com.google.common.io.CharStreams;
-import com.sun.javafx.PlatformUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.log4j.Logger;
