@@ -13,7 +13,7 @@ public class JsonConsumer implements IConsumer {
 
 
     @Override
-    public Consumer<String> actionOnEvent() {
+    public Consumer<String> onEvent() {
         return line -> {
             try {
                 Map<String, String> res = objectMapper.readValue(line, Map.class);

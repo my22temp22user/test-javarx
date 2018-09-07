@@ -4,5 +4,5 @@ import java.util.function.Consumer;
 
 public interface IConsumer {
 
-    Consumer<String> actionOnEvent();
+    Consumer<String> onEvent();
 }

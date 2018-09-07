@@ -20,14 +20,28 @@ public class JsonProducer {
     private final Logger logger = Logger.getLogger(getClass());
 
     private final List<IConsumer> consumers = new ArrayList<>();
+    private boolean started = false;
 
-    public void addSubscriber(IConsumer consumer) {
+    public JsonProducer addSubscriber(IConsumer consumer) {
+        validateNotStarted();
+
         logger.info("added consumer");
 
         consumers.add(consumer);
+
+        return this;
+    }
+
+    private void validateNotStarted() {
+        if (started) {
+            throw new IllegalStateException("producer already started");
+        }
     }
 
     public void start() {
+        validateNotStarted();
+
+        started = true;
 
         logger.info("starting produce events");
 
@@ -39,7 +53,7 @@ public class JsonProducer {
         for (IConsumer consumer : consumers) {
             logger.info("subscribing to events");
 
-            listObservable.subscribe(line -> consumer.actionOnEvent().accept(line));
+            listObservable.subscribe(line -> consumer.onEvent().accept(line));
         }
 
         Executors.newSingleThreadExecutor().submit(() -> {

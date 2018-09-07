@@ -53,24 +53,34 @@ public class ServerIT {
 
     @Test
     public void test() throws Exception {
-        int eventTypeCount = Integer.parseInt(getEventTypeCount("baz", port));
-        logger.info("eventTypeCount: " + eventTypeCount);
-        assertTrue(eventTypeCount > 0);
+        assertTrue(getEventTypeCount("baz") > 0);
+        assertTrue(getDataWordCount("amet") > 0);
 
-        int dataWordCount = Integer.parseInt(getDataWordCount("amet", port));
-        logger.info("dataWordCount: " + dataWordCount);
-        assertTrue(dataWordCount > 0);
+        assertEquals(0, getEventTypeCount("not_existing_event_type"));
+        assertEquals(0, getDataWordCount("not_existing_word_in_data"));
     }
 
-    private String getEventTypeCount(String eventType, int port) throws IOException {
-        return executeHttpGetRequest("/service/test/count/events/type/"+eventType, port);
+    private int getDataWordCount(String dataWord) throws IOException {
+        int dataWordCount = getCount("/service/test/count/data/word/"+dataWord);
+
+        logger.info("dataWord " + dataWord + ", count: " + dataWordCount);
+
+        return dataWordCount;
     }
 
-    private String getDataWordCount(String word, int port) throws IOException {
-        return executeHttpGetRequest("/service/test/count/data/word/"+word, port);
+    private int getEventTypeCount(String eventType) throws IOException {
+        int eventTypeCount = getCount("/service/test/count/events/type/" + eventType);
+
+        logger.info("eventType " + eventType + ", count: " + eventTypeCount);
+
+        return eventTypeCount;
     }
 
-    private String executeHttpGetRequest(String path, int port) throws IOException {
+    private int getCount(String path) throws IOException {
+        return Integer.parseInt(executeHttpGetRequest(path));
+    }
+
+    private String executeHttpGetRequest(String path) throws IOException {
         String url = "http://localhost:" + port + path;
 
         logger.info("executing http request: " + url);
@@ -84,7 +94,7 @@ public class ServerIT {
         return CharStreams.toString(new InputStreamReader(response.getEntity().getContent()));
     }
 
-    private synchronized int generatePort() {
+    private int generatePort() {
         int port = random.nextInt(65535 - 1024) + 1024;
 
         logger.info("generated port: " + port);
